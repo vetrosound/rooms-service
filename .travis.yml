@@ -1,0 +1,52 @@
+dist: bionic
+language: node_js
+node_js:
+  - 12
+cache:
+  yarn: true
+  directories:
+    - ~/.cache
+    - ~/.sonar/cache
+
+addons:
+  sonarcloud:
+    organization: vetrosound
+    token:
+      secure: tS03hTj0n7pdYRacCDtR+Zx76HCROuZsjscVqRPEsFpCGG5xCgt9kuKcg1BskkKNvxGFocKPRFDPh8/evSqq8weHZCJWooUeQf8yh15UpF/jYPnc9ozcttfDk04UB/I8DCkRusHo1v5Bt/200M/INu26tmHrv7AJc+EEEfvM07rC+xh8HImXGUZEnpuaVr/4OLduAh2oG1DkrvLKKRZUpwduzjfk3tzYjuXwTJU2oNmNaYMDXfaH9QfTVLvCTeddp9TCieaZ63cjyiZoB8cT0OEtm7/7GKn33+6zbQ+r4y+nZ55EKcb3EA6g0x87d+qwVvciiKM4UaBjdfgXEa9AfabGd1CEEL9R124RzZxKgVn4MwecKvO2xt65xrldaFLd5zhRPnrPLE/HDYvmbwDV1tSaMrrr3XrzECY+dK6oFMtXc2l2KVWhXNHUzNRd3cHxDdIt7EhWxKW4NhiMq82m5qipmbwZe8vT5MEJoGRntRc9mLoHEORh/R+KtZDFjcBqfyFtynj5yyvAaQeCWi7Ipg6aEuObOa2bzxo5DynRHT1yypGBzJfr8Vxqfkoqhx/a6Yv561viByqpvkgzwMmOaXg89vSY2GTwm/2hTqpy2tMr37C1W0BmsEA8jQGkZ6iceGEM1UCfXEexjf1wL+kdWqgAYoN9eDyz6xLKcdK0AjM=
+
+branches:
+  only:
+    - master
+
+install:
+  - yarn
+
+services:
+  - docker
+
+script:
+  - yarn lint
+  - yarn build
+  - yarn test
+  - yarn test:e2e
+  - sonar-scanner
+  - docker-compose build --force-rm
+
+deploy:
+  provider: script
+  script: bash scripts/docker-push.sh
+  on:
+    branch: master
+
+notifications:
+  email: false
+  slack:
+    on_success: always
+    on_failure: change
+    rooms:
+      - secure: oJ5FTEioL3XDjmYACGd5bcilfzeG/p5WoMZrv0KzcZZ2d+D5tnaNlrNV2X2aXr1IfAQiLa2WJFOedY3KXZIDASxv2lc9cn9T7Zq/Tgz26rdsk5FL6fA8yRuA0D75lz8HCmUcjI4vkQrI51ra83Dx6j7RQ1HI1mapLldO5x4HtRT1uMSURcYnytaKyg84/59joArwTSKOh+KeW3MwgyAHFHuuvEFY92Xj3WIySzYsZRt+9S6p6xF1LgLX33NwyL9PgCQo18TBNJpeLchsJYIlz2+5EiHAgFhDnDyXB0y/MHbcUtZSCmWDUnSBpm1l5jK2OKoFVGM94ujFIHUlIt6n6Lj8ZaDLRDg2r2Wd566QAeUE4D8zN8edDi+KX+2PJzskbqW5ogAuClM5RlURcgR0EqbXkIJeoS4Tup621VyKSUa/vd32g3AewVIoGYnaGk9iRGRcUhHfF0a1DRuSSaVzKEIszRyGAES/JQWdu/sMLOFWCiTBxsC2CHI8LkKF54Al1T+ulPLBgvogC6R9mBisn3U2qu39WRTb4mtB7vtgBPpYi94lFU+lbXxB9JfInE41JKNNDyQsMnQDriW+E88QCR2U9TiKKZDRP0OJcs6+5/Ei42B4qtRJDulwmHmwFm1XbEyABBqzg319tkXdIKRIOOdcKZ1g2DwXvaJRSdjAX1c=
+
+env:
+  global:
+    - secure: W6htc6jjkXES0dLqpJbR56/MPQ0AVqjupcvWq6OcPyGzbYeLWOPMJ6M5fssdexqk69uSeoAax9oAbeiWKaFpbyzr+cGATZWGS5pXFyZitbNr/GIr4ttkaO8CQsOYKROPX9PyHybV0jj9Bgry+X9Pf7UxO3ENsPCM1lG4LsmmRmz+wvgAD8yxapmIyK/FQ+yrtGhjmWO/YkobE1do8WBDmJiNaIV7X1dGGKwFd3A5ubMv7/Ag6NYW6Crp+3njvNso64UUjpflMrYepCj/LqAKcbetcgRQ7bLqwWwBZKwBEGigMoFK20ThimcKvxZW7EunH4mCJhXbx3d83kUPjNvtVOWKwTYClnTFqEbCqFh4fbPkaxHpb7n2v23RlfikKS/bGtNaV8q04vTNfZ3c+C6i+dLV1DVOI5a/rPhN8U8M4QCEWy3PB2Z/axC9MBNdwPmwUdS+Ce44eqS7B1giCP1xbIt9+UvRSv0PA6y97CBvCycGl4X6Y1xFzlRZkUAInwwdUAVDFctrJnWalwsOuA2VCr2dDN1MzbjjsTumXIaq8gTmMasEzJ5ReDGTTlUOojmRH4QnIjF7Zo2yTBa6TvYILXhKymLk5iBxwQfkZl+zSqV+W6qBhTUWSikUS1kelS7pCmoJjngiDONIxtnAXyRHSth1bZb4pvyrLdijyJ8myrM=
+    - secure: qcb7zgaS/8KwzZIAPU4wb936D6KdaqYzYYq/7mvdYc8RTxFjZ1sHyycUF1V6V6RQ8Zvqr6GRPKzUdor4JY5rvlu02wISY8qBE9+aZDieNHCyIYyQaLd4RAyjxEM3HX3w+B3b+qtGoO72FFX+/x/MqaFuOLZGkhG16LaiHa5Irq+5KSSCCxQsJ6STVHrw0dP8R0g15scQrBhhXJ9/QbtAdfqtUCQWRpcP+rKFmSd/2maWbmaI3cAJa6Wp3/FEdCmLtFgyMuaxthvpSV+E8eDUuzi76PYF+8f8IXKglxqH9yxc7DhuYdwzVhQTLMX18aOcQ0hvAUD8JxYw5HqpzrR1bGacRO720oRby6++pg8NbE/1GgfRAqPQuTdbRUlda8S5fKezuC31fbuz/LvjnmJJjVIdjk5pVqCyZos/URTbVPt+FZ1ETsoY9PSvAlDcx4gzyaGGyQdu/HKx0j0aK+cPk1a0cgb3gekH0wm+VUw2YHMb/Ym6Bx7w62brkO6QRKOiBRGOqf4Ny7+ooiLYXGgf5M9pKN3EpB1x2TfHTFWwwmQ5UiOvYrBLYOctqHfhQqngEwqF1o0t/avtnkmethYv+wjB+bOr0boibWSj+hcLkMDd3H89xRrzOSjOm9y+ZKziKqxkPQTs9mAzGfI1Bmy4WihaZN/1GtiG2iCDJ9JWNvI=
