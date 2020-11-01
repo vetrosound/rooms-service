@@ -1,0 +1,34 @@
+version: "3.3"
+services:
+  rooms:
+    build:
+      context: .
+      cache_from:
+        - "node:alpine"
+    image: "vetrosound/rooms-service:latest"
+    container_name: "rooms-service"
+    restart: "always"
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      - "mongo"
+    links:
+      - "mongo"
+    networks:
+      - "vetrosound"
+    environment:
+      - "MONGO_URL=mongodb://mongo"
+  mongo:
+    image: "mongo:bionic"
+    container_name: "mongo"
+    restart: "always"
+    ports:
+      - "127.0.0.1:27017:27017"
+    networks:
+      - "vetrosound"
+    environment:
+      - "MONGO_INITDB_ROOT_USERNAME=admin"
+      - "MONGO_INITDB_ROOT_PASSWORD=password"
+
+networks:
+  vetrosound:
