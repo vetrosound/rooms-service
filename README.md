@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/vetrosound/rooms-service.svg?branch=main)](https://travis-ci.com/vetrosound/rooms-service)
+
 ## Installation
 
 ```bash
