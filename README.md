@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.com/vetrosound/rooms-service.svg?branch=main)](https://travis-ci.com/vetrosound/rooms-service)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vetrosound-rooms-service&metric=alert_status)](https://sonarcloud.io/dashboard?id=vetrosound-rooms-service)
+
 ## Installation
 
 ```bash
