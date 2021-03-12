@@ -16,7 +16,7 @@ addons:
 
 branches:
   only:
-    - master
+    - main
 
 install:
   - yarn
@@ -36,7 +36,7 @@ deploy:
   provider: script
   script: bash scripts/docker-push.sh
   on:
-    branch: master
+    branch: main
 
 notifications:
   email: false
