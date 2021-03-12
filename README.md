@@ -32,10 +32,10 @@ $ yarn test:e2e
 $ yarn test:cov
 ```
 
-## Working with docker
+## Working with docker (docker-compose must be installed)
 
-### Run
-`yarn docker:run`
+### Build and Run
+`yarn docker:build:run`
 
-### Run
-`yarn docker:build`
+### Stop
+`yarn docker:stop`
